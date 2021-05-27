@@ -1,0 +1,64 @@
+openapi: 3.0.1
+info:
+  title: Sape Sports Football API
+  version: "1.0"
+servers:
+  - url: http://localhost:8080/api/sapesports/v1
+paths:
+  /football/standings/search:
+    get:
+      tags:
+        - Standings
+      summary: Search standings for the given input
+      parameters:
+        - name: countryName
+          in: query
+          description: Name of the country
+          required: true
+          schema:
+            type: string
+          example: England
+        - name: leagueName
+          in: query
+          description: Name of the league
+          required: true
+          schema:
+            type: string
+          example: Non League Premier
+        - name: teamName
+          in: query
+          description: Name of the team
+          required: true
+          schema:
+            type: string
+          example: Worthing
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamStandings'
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+      deprecated: false
+components:
+  schemas:
+    TeamStandings:
+      title: TeamStandings
+      type: object
+      properties:
+        "Country ID & Name":
+          type: string
+          example: (44) - England
+        "League ID & Name":
+          type: string
+          example: (149) - Non League Premier
+        "Team ID & Name":
+          type: string
+          example: (3450) - Worthing
+        "Overall League Position":
+          type: integer
+          example:
