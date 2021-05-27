@@ -28,6 +28,7 @@ export SAPESPORTS_FOOTBALLAPI_APIKEY=<the-api-key>
 - JUnits (Must)
 - Circuit Breakers (resilience4j)
 - Retries
+- Tracing
 - Monitoring using Prometheus/Grafana
 - Performance Tests using Gatling ([Readme](gatling/README.md))
 - Front-end
