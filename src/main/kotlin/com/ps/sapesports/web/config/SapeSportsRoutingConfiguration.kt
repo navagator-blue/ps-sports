@@ -7,7 +7,6 @@ import org.springframework.web.reactive.function.server.RouterFunction
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.router
 
-
 @Configuration
 class SapeSportsRoutingConfiguration(private val sapeSportsHandler: SapeSportsHandler) {
 

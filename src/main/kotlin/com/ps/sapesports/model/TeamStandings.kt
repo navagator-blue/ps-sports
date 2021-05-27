@@ -1,6 +1,7 @@
 package com.ps.sapesports.model
 
 data class TeamStandings(
+    val countryId: String,
     val countryName: String,
     val leagueId: String,
     val leagueName: String,

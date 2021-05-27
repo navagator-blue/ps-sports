@@ -24,24 +24,32 @@ class FootballService(private val footballAPIClient: FootballAPIClient) {
                 } ?: throw IllegalArgumentException("Country not found: ${searchStandingsRequest.countryName}")
             }
             .doOnNext { logger.info("Found matching country $it") }
-            .flatMapMany { country -> footballAPIClient.getLeagues(countryId = country.countryId) }
-            .collectList()
-            .map { leagues ->
-                leagues.firstOrNull {
-                    it.leagueName.equals(searchStandingsRequest.leagueName, true)
-                }
-                    ?: throw IllegalArgumentException("League not found: ${searchStandingsRequest.leagueName}")
-
+            .flatMap { country ->
+                footballAPIClient.getLeagues(countryId = country.countryId)
+                    .collectList()
+                    .map { leagues ->
+                        leagues.firstOrNull { it.leagueName.equals(searchStandingsRequest.leagueName, true) }
+                            ?: throw IllegalArgumentException("League not found: ${searchStandingsRequest.leagueName}")
+                    }
+                    .doOnNext { logger.info("Found matching league $it") }
+                    .flatMapMany { league -> footballAPIClient.getStandings(leagueId = league.leagueId) }
+                    .collectList()
+                    .map {
+                        it.first { standings ->
+                            standings.leagueName.equals(
+                                searchStandingsRequest.leagueName,
+                                true
+                            )
+                        }
+                    }
+                    .map { standings -> transformStandings(standings, country.countryId) }
             }
-            .doOnNext { logger.info("Found matching league $it") }
-            .flatMapMany { league -> footballAPIClient.getStandings(leagueId = league.leagueId) }
-            .collectList()
-            .map { it.first { standings -> standings.leagueName.equals(searchStandingsRequest.leagueName, true) } }
-            .map { mapStandings(it) }
+            .doOnNext { logger.info("Found standing $it") }
     }
 
-    private fun mapStandings(standings: Standings): TeamStandings {
+    private fun transformStandings(standings: Standings, countryId: String): TeamStandings {
         return TeamStandings(
+            countryId = countryId,
             countryName = standings.countryName,
             leagueId = standings.leagueId,
             leagueName = standings.leagueName,
