@@ -11,9 +11,15 @@ A reactive microservice to find standings of a team playing league football matc
 
 ### Build and start the application
 ```bash
-
+# Run on host machine
 export SAPESPORTS_FOOTBALLAPI_APIKEY=<the-api-key>
 ./gradlew bootRun
+
+
+# To run in a docker container
+export SAPESPORTS_FOOTBALLAPI_APIKEY=<the-api-key>
+docker build -t sapesports:v1 .
+docker run -p 8081:8080 -e SAPESPORTS_FOOTBALLAPI_APIKEY=$SAPESPORTS_FOOTBALLAPI_APIKEY -it sapesports:v1
 
 ```
 
@@ -25,7 +31,7 @@ export SAPESPORTS_FOOTBALLAPI_APIKEY=<the-api-key>
 - Perf simulation using Gatling
 
 ### Potential enhancements
-- JUnits (Must)
+- More tests
 - Circuit Breakers (resilience4j)
 - Retries
 - Tracing
